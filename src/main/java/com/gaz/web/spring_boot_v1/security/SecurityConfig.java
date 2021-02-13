@@ -33,22 +33,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/").anonymous()
-                .antMatchers("/user").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .anyRequest().authenticated()
+                    .antMatchers("/").anonymous()
+                    .antMatchers("/user").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                    .anyRequest().authenticated()
 
                 .and()
-                .formLogin()
-                .permitAll()
-                .successHandler(successUserHandler)
+                    .formLogin()
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .usernameParameter("form_username")
+                    .passwordParameter("form_password")
+                    .successHandler(successUserHandler)
+                    .permitAll()
 
                 .and()
-                .logout().invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/")
-                .permitAll();
+                    .logout().invalidateHttpSession(true)
+                    .clearAuthentication(true)
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/")
+                    .permitAll();
     }
 
     @Bean

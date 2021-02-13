@@ -20,74 +20,77 @@ public class AppController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/")
+    @GetMapping({"/", "login"})
     public String welcome() {
-        return "welcome.html";
+
+        return "login";
     }
 
     @GetMapping("/user")
-    public String getInfoOnlyForUser(Model model) {
+    public String user(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         User user = userService.getUserByName(username);
 
         model.addAttribute("currentUser", user);
+
         return "user";
     }
 
     @GetMapping("/admin")
-    public String getInfoOnlyForAdmin(Model model) {
-
+    public String admin(Model model) {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
         List<User> allUsersList = userService.getAllUsers();
+        model.addAttribute("listRole", userService.getListRole());
+        model.addAttribute("user", userService.getUserByName(name));
         model.addAttribute("allUsersList", allUsersList);
 
         return "admin";
     }
 
-    @GetMapping("/admin/user/{id}")
-    public String getInfoAboutUserForAdmin(@PathVariable("id") Long id, Model model) {
-
+    @PostMapping("/admin/users/{id}")
+    public String update(@ModelAttribute("id") Long id,
+                         @ModelAttribute("username") String username,
+                         @ModelAttribute("password") String password,
+                         @ModelAttribute("name") String name,
+                         @ModelAttribute("lastname") String lastname,
+                         @ModelAttribute("age") int age,
+                         @ModelAttribute("email") String email,
+                         @ModelAttribute("roles") String[] roles) {
         User user = userService.getUserById(id);
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setName(name);
+        user.setLastName(lastname);
+        user.setAge(age);
+        user.setEmail(email);
 
-        model.addAttribute("user", user);
-        return "about_user_for_admin";
-    }
-
-    @RequestMapping("/admin/addNewUser")
-    public String addNewUser(Model model) {
-        model.addAttribute("listRole", userService.getListRole());
-        model.addAttribute("user", new User());
-        return "new_user";
-    }
-
-    @PostMapping("/admin/saveUser")
-    public String saveUser(@ModelAttribute("user") User user, @RequestParam("role") String[] role) {
-        user.setRoles(getRoles(role));
-        user.setId(99L);
+        user.setRoles(getRoles(roles));
         userService.saveUser(user);
 
         return "redirect:/admin";
     }
 
-    @GetMapping(value = "/admin/update/{id}")
-    public String update(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("listRole", userService.getListRole());
-        User user = userService.getUserById(id);
-        model.addAttribute("user", user);
-        return "editing_user_form";
-    }
-
-    @PostMapping(value = "/admin/edit")
-    public String edit(@ModelAttribute("user") User user, @RequestParam("role") String[] role) {
-        user.setRoles(getRoles(role));
+    @PostMapping(value = "/admin/users")
+    public String add(@ModelAttribute("username") String username,
+                       @ModelAttribute("password") String password,
+                       @ModelAttribute("name") String name,
+                       @ModelAttribute("lastname") String lastname,
+                       @ModelAttribute("age") int age,
+                       @ModelAttribute("email") String email,
+                       @ModelAttribute("roles") String[] roles) {
+        User user = new User(username, password, name, lastname, age, email);
+        user.setId(9999L);
+        user.setRoles(getRoles(roles));
         userService.saveUser(user);
+
         return "redirect:/admin";
     }
 
-    @RequestMapping("/admin/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
-
+    @DeleteMapping("/admin/users/{id}")
+    public String delete(@ModelAttribute("id") Long id) {
         userService.deleteUser(id);
+
         return "redirect:/admin";
     }
 

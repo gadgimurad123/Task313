@@ -1,68 +1,117 @@
-<!--<html xmlns:th="http://www.w3.org/1999/xhtml">-->
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org" lang="EN">
+<html xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="EN">
 <head>
-    <meta charset="UTF-8">
-    <title>User</title>
-    <style>
-        div.centre {
-            margin: auto;
-            width: 870px;
-            border: 3px solid #008000;
-            padding: 15px;
-        }
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        table.centre {
-            border-collapse: collapse; /* Убираем двойные линии между ячейками */
-            border: 2px solid white; /* Прячем рамку вокруг таблицы */
-        }
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/main.css">
 
-        td.centre, th.centre {
-            padding: 2px; /* Поля вокруг содержимого таблицы */
-            border: 1px solid #008000; /* Параметры рамки */
-        }
-    </style>
+    <title>Admin page</title>
 </head>
 
 <body>
 
-<div class="centre">
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Logout"/>
-    </form>
+<div>
 
-    <h3>User info:</h3>
+    <!--Header-->
+    <nav class="navbar navbar-dark bg-dark p-0">
+        <div class="container-fluid m-2">
+            <a class="navbar-brand col-lg-10 col-sm-3 col-md-2 mr-0" href="#" style="margin-left: 27px;"
+               th:text="${currentUser.getEmail() + ' WITH ROLES ' + currentUser.getRoles()}"></a>
+            <ul class="navbar-nav px-4">
+                <li class="nav-item">
+                    <form action="/logout" method="post">
+                        <button type="submit" class="btn btn-link navbar-btn navbar-link bg-dark text-white-50">
+                            Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-    <table class="centre">
-        <tr>
-            <th class="centre">Id</th>
-            <th class="centre">Username</th>
-            <th class="centre">Password</th>
-            <th class="centre">Name</th>
-            <th class="centre">Last name</th>
-            <th class="centre">Age</th>
-            <th class="centre">E-mail</th>
-            <th class="centre">Role</th>
-        </tr>
+    <div class="container-fluid">
+        <div class="row">
 
-        <tr th:each="user, state : ${currentUser}"
-            class="row" th:classappend="${state.odd} ? 'odd-row' : 'even-row'">
+            <!--Menu-->
+            <nav class="col-sm-2 d-md-block bg-white sidebar">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <div sec:authorize="hasRole('ROLE_ADMIN')">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin">
+                                    <span>Admin</span>
+                                </a>
+                            </li>
+                        </div>
+                        <div sec:authorize="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                            <li class="nav-item">
+                                <a class="nav-link bg-primary" href="/user">
+                                    <span class="text-light">User</span>
+                                </a>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+            </nav>
 
-            <td th:utext="${user.id}" class="centre">Id</td>
-            <td th:utext="${user.username}" class="centre">Username</td>
-            <td th:utext="${user.password}">Password</td>
-            <td th:utext="${user.name}" class="centre">Name</td>
-            <td th:utext="${user.lastName}" class="centre">Last name</td>
-            <td th:utext="${user.age}" class="centre">Age</td>
-            <td th:utext="${user.email}" class="centre">E-mail</td>
-            <td>
-                <label th:each="userRole: ${user.roles}">
-                    <span th:text="${userRole.getRole()}">Roles</span>
-                </label>
-            </td>
-        </tr>
-    </table>
+            <!--Body-->
+            <main role="main" class="col-md-5 ml-sm-8 col-lg-10">
+                <h1 style="margin: 20px;"><b>User information-page</b></h1>
+                <div class="col border">
+                    <h2 class="m-3">About user</h2>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr class="active">
+                            <th>Id</th>
+                            <th>Username</th>
+                            <th>Password</th>
+                            <th>Name</th>
+                            <th>Last name</th>
+                            <th>Age</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td th:text="${currentUser.getId()}"></td>
+                            <td th:text="${currentUser.getUsername()}"></td>
+                            <td th:text="${currentUser.getPassword()}"></td>
+                            <td th:text="${currentUser.getName()}"></td>
+                            <td th:text="${currentUser.getLastName()}"></td>
+                            <td th:text="${currentUser.getAge()}"></td>
+                            <td th:text="${currentUser.getEmail()}"></td>
+                            <td th:text="${currentUser.getRoles()}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+
 </div>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 
