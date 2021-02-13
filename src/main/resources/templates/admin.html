@@ -125,11 +125,12 @@
 
                                         <!--Modal EDIT-->
                                         <div class="modal fade" th:id="edit+${user.getId()}" tabindex="-1" role="dialog"
-                                             aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                             aria-labelledby="modalTitle" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLongTitle"><b>Edit user</b></h5>
+                                                        <h5 class="modal-title" id="modalTitle"><b>Edit
+                                                            user</b></h5>
                                                         <button type="button" class="close" data-dismiss="modal"
                                                                 aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
@@ -184,16 +185,6 @@
                                                                            name="email"
                                                                            id="email" th:value="${user.getEmail()}"/>
                                                                 </div>
-<!--                                                                <div class="form-group">-->
-<!--                                                                    <label for="exampleFormControlSelect2"><b>Role</b></label>-->
-<!--                                                                    <select multiple="true" size="2"-->
-<!--                                                                            class="form-control"-->
-<!--                                                                            name="roles" id="exampleFormControlSelect2">-->
-<!--                                                                        <th:block th:each="roles : ${user.roles}">-->
-<!--                                                                            <option th:text="${roles.getRole().substring(5)}"></option>-->
-<!--                                                                        </th:block>-->
-<!--                                                                    </select>-->
-<!--                                                                </div>-->
                                                                 <select multiple size="2" th:required="true"
                                                                         class="form-control" name="roles">
                                                                     <option th:each="role : ${listRole}"
@@ -217,15 +208,15 @@
                                             </div>
                                         </div><!--Modal EDIT-->
 
-
                                         <!--Modal DELETE-->
                                         <div class="modal fade" th:id="delete+${user.getId()}" tabindex="-1"
                                              role="dialog"
-                                             aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                             aria-labelledby="modalTitle" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLongTitle"><b>Delete user</b></h5>
+                                                        <h5 class="modal-title" id="modalTitle"><b>Delete
+                                                            user</b></h5>
                                                         <button type="button" class="close" data-dismiss="modal"
                                                                 aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
@@ -256,11 +247,27 @@
                                                                            value="********" disabled/>
                                                                 </div>
                                                                 <div class="form-group" style="margin-top: 15px;">
+                                                                    <label for="name"><b>Last name</b></label>
+                                                                    <input type="text" class="form-control"
+                                                                           name="name"
+                                                                           id="name"
+                                                                           th:value="${user.getName()}"
+                                                                           disabled/>
+                                                                </div>
+                                                                <div class="form-group" style="margin-top: 15px;">
                                                                     <label for="lastname"><b>Last name</b></label>
                                                                     <input type="text" class="form-control"
                                                                            name="lastname"
                                                                            id="lastname"
                                                                            th:value="${user.getLastName()}"
+                                                                           disabled/>
+                                                                </div>
+                                                                <div class="form-group" style="margin-top: 15px;">
+                                                                    <label for="age"><b>Age</b></label>
+                                                                    <input type="text" class="form-control"
+                                                                           name="age"
+                                                                           id="age"
+                                                                           th:value="${user.getAge()}"
                                                                            disabled/>
                                                                 </div>
                                                                 <div class="form-group" style="margin-top: 15px;">
@@ -277,7 +284,7 @@
                                                                             name="roles" id="exampleFormControlSelect2"
                                                                             disabled>
                                                                         <th:block th:each="roles : ${user.getRoles()}">
-                                                                            <option th:text="${roles.getRole().substring(5)}"></option>
+                                                                            <option th:text="${roles.getRole()}"></option>
                                                                         </th:block>
                                                                     </select>
                                                                 </div>
